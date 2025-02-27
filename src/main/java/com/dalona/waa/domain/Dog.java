@@ -23,7 +23,7 @@ public class Dog {
     @Column(name = "organization_id", nullable = false)
     private Integer organizationId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private String name;
 
     @Enumerated(EnumType.STRING)

@@ -18,13 +18,13 @@ public class DogProfile {
     private Integer dogId;
 
     /* 기본 정보 */
-    @Column(name = "adoption_address", length = 255)
+    @Column(name = "adoption_address")
     private String adoptionAddress;
 
     @Column(name = "rescue_date", nullable = false)
     private LocalDate rescueDate; // 구조일시
 
-    @Column(name = "rescue_location", length = 255, nullable = false)
+    @Column(name = "rescue_location", nullable = false)
     private String rescueLocation; // 구조 장소
 
     @Column(nullable = false)
