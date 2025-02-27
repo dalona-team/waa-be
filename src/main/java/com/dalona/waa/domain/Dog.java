@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "dog")
 public class Dog {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -63,13 +64,14 @@ public class Dog {
     }
 
     @Builder
-    public Dog(int organizationId, String name, DogGender gender, LocalDate birthDate, boolean birthDateIsEstimated,
-               DogStatus status) {
+    public Dog(Integer organizationId, String name, DogGender gender, LocalDate birthDate, boolean birthDateIsEstimated,
+               DogStatus status, Integer createdBy) {
         this.organizationId = organizationId;
         this.name = name;
         this.gender = gender;
         this.birthDate = birthDate;
         this.birthDateIsEstimated = birthDateIsEstimated;
         this.status = status;
+        this.createdBy = createdBy;
     }
 }
