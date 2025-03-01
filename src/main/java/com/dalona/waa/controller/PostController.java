@@ -31,11 +31,11 @@ public class PostController {
     public ResponseEntity<ContentsResDto> generateContents(@Valid @RequestBody ContentsReqDto contentsReqDto) {
         ContentsResDto contentsResDto = clovaStudioService.generateContents(contentsReqDto);
 
-        return new ResponseEntity<>(contentsResDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(contentsResDto, HttpStatus.OK);
     }
 
-    @PostMapping("/")
-    @Operation()
+    @PostMapping
+    @Operation(summary = "인스타그램 업로드 후 게시글 저장 API", description = "인스타그램 게시글 업로드 후 게시글 정보를 저장합니다.")
     public ResponseEntity<PostResDto> createPost(@Valid @RequestBody CreatePostDto createPostDto) {
         PostResDto postResDto = postService.createPost(createPostDto);
 
