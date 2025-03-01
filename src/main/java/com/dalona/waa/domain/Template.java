@@ -1,6 +1,9 @@
 package com.dalona.waa.domain;
 
+import com.dalona.waa.converter.ChatMessageListConverter;
+import com.dalona.waa.dto.ChatMessage;
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -20,6 +23,13 @@ public class Template {
 
     @Column(nullable = false, length = 255)
     private String title;
+
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String system;
+
+    @Convert(converter = ChatMessageListConverter.class)
+    @Column(columnDefinition = "TEXT")
+    private List<ChatMessage> chat;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -45,9 +55,11 @@ public class Template {
     }
 
     @Builder
-    public Template(Integer organizationId, String title, Integer createdBy) {
+    public Template(Integer organizationId, String requestId, String title, String system, List<ChatMessage> chat, Integer createdBy) {
         this.organizationId = organizationId;
         this.title = title;
+        this.system = system;
+        this.chat = chat;
         this.createdBy = createdBy;
     }
 }

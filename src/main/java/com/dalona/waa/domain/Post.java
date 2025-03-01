@@ -18,7 +18,7 @@ public class Post {
     @Column(name = "dog_id", nullable = false)
     private Integer dogId;
 
-    @Column(name = "instagram_url", nullable = false)
+    @Column(name = "instagram_url")
     private String instagramUrl;
 
     @Column(name = "created_at", nullable = false)

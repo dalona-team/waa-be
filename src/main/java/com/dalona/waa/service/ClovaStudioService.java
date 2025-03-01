@@ -1,0 +1,112 @@
+package com.dalona.waa.service;
+
+import com.dalona.waa.dto.ChatMessage;
+import com.dalona.waa.dto.clovaDto.ClovaChatMessage;
+import com.dalona.waa.dto.clovaDto.ClovaRequestBody;
+import com.dalona.waa.dto.clovaDto.ClovaResponse;
+import com.dalona.waa.dto.requestDto.ContentsReqDto;
+import com.dalona.waa.dto.responseDto.ContentsResDto;
+import com.dalona.waa.dto.responseDto.DogProfileResDto;
+import com.dalona.waa.dto.responseDto.DogResDto;
+import com.dalona.waa.dto.responseDto.TemplateResDto;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class ClovaStudioService {
+
+    private final TemplateService templateService;
+    private final DogService dogService;
+    private final RestTemplate restTemplate;
+
+    @Value("${clova.api.url}")
+    private String clovaApiUrl;
+
+    @Value("${clova.api.key}")
+    private String clovaApiKey;
+
+    public ContentsResDto generateContents(ContentsReqDto contentsReqDto) {
+        TemplateResDto template = templateService.getTemplateById(contentsReqDto.getTemplateId());
+        DogResDto dog = dogService.getDogById(contentsReqDto.getDogId());
+        DogProfileResDto dogProfile = dogService.getDogProfileByDogId(contentsReqDto.getDogId());
+
+        ClovaRequestBody clovaRequestBody = buildRequestBody(
+                template.getSystem(),
+                template.getChat(),
+                formatDogProfile(dog, dogProfile)
+        );
+        String contents = requestChatCompletion(clovaRequestBody);
+
+        return ContentsResDto.builder().contents(contents).build();
+    }
+
+    private String formatDogProfile(DogResDto dog, DogProfileResDto dogProfile) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("강아지 정보 :\n");
+        sb.append("- 이름 : ").append(dog.getName()).append("\n");
+        sb.append("- 성별 : ").append(dog.getGender()).append("\n");
+        sb.append("- 몸무게 : ").append(dogProfile.getWeight() / 1000).append("kg").append("\n");
+        sb.append("- 출생연월 : ").append(dog.getBirthDate()).append("\n");
+        sb.append("- 구조일시 : ").append(dogProfile.getRescueDate()).append("\n");
+        sb.append("- 구조 위치 : ").append(dogProfile.getRescueLocation()).append("\n");
+        sb.append("- 중성화 여부 : ").append(dogProfile.getNeutered()).append("\n");
+        sb.append("- 심장사상충 감염 여부 : ").append(dogProfile.getHeartworm()).append("\n");
+        sb.append("- 켄넬 코프 접종 여부 : ").append(dogProfile.getKennelCough()).append("\n");
+        sb.append("- 이빨 스케일링 : ").append(dogProfile.getDentalScaling()).append("\n");
+        sb.append("- 짖음 정도(1~5) : ").append(dogProfile.getBarkingLevel()).append("\n");
+        sb.append("- 분리불안 정도(1~5) : ").append(dogProfile.getSeparationAnxiety()).append("\n");
+        sb.append("- 배변활동 : ").append(dogProfile.getPottyTraining()).append("\n");
+        sb.append("- 성격 : ").append(dogProfile.getBehaviorNotes()).append("\n");
+        sb.append("- 구조 사연 : ").append(dogProfile.getRescueContext()).append("\n");
+        sb.append("- 추가 스토리 : ").append(dogProfile.getAdditionalStory()).append("\n");
+        sb.append("공고 : ");
+
+        return sb.toString();
+    }
+
+    private ClovaRequestBody buildRequestBody(String system, List<ChatMessage> chat, String dogProfile) {
+        ArrayList<ClovaChatMessage> messages = new ArrayList<>();
+        messages.add(ClovaChatMessage.builder().role("system").content(system).build());
+
+        for (ChatMessage message : chat) {
+            messages.add(ClovaChatMessage.builder().role("user").content(message.getUser()).build());
+            messages.add(ClovaChatMessage.builder().role("assistant").content(message.getUser()).build());
+        }
+        messages.add(ClovaChatMessage.builder().role("user").content(dogProfile).build());
+
+        return ClovaRequestBody.builder()
+                .messages(messages)
+                .build();
+    }
+
+    private String requestChatCompletion(ClovaRequestBody requestBody) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + clovaApiKey);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<ClovaRequestBody> httpEntity = new HttpEntity<>(requestBody, headers);
+
+        ResponseEntity<ClovaResponse> response = restTemplate.exchange(
+                clovaApiUrl,
+                HttpMethod.POST,
+                httpEntity,
+                ClovaResponse.class
+        );
+        ClovaResponse clovaResponse = response.getBody();
+
+        if (!"20000".equals(clovaResponse.getStatus().getCode())) {
+            throw new RestClientException("Clova API 오류 발생: " + clovaResponse.getStatus().getMessage());
+        }
+
+        return clovaResponse.getResult().getMessage().getContent();
+    }
+}
