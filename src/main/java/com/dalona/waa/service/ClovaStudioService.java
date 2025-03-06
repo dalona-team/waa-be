@@ -89,6 +89,13 @@ public class ClovaStudioService {
 
         return ClovaRequestBody.builder()
                 .messages(messages)
+                .topP(0.8)
+                .topK(0)
+                .maxTokens(500)
+                .temperature(0.5)
+                .repeatPenalty(5.0)
+                .stopBefore(new ArrayList<>())
+                .includeAiFilters(true)
                 .build();
     }
 
