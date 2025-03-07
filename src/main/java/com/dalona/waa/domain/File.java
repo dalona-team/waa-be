@@ -9,6 +9,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,7 +27,7 @@ public class File {
     private Integer organizationId;
 
     @Column(nullable = false)
-    private String name;
+    private String originalName;
 
     @Column(name = "content_type", nullable = false)
     private String contentType;
@@ -40,8 +41,21 @@ public class File {
     @Column(name = "created_by", nullable = false)
     private Integer createdBy;
 
+    @Column(name = "expired_at")
+    private LocalDateTime expiredAt;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
+        this.expiredAt = LocalDateTime.now();
+    }
+
+    @Builder
+    public File(int organizationId, String originalName, String contentType, String url, int createdBy) {
+        this.organizationId = organizationId;
+        this.originalName = originalName;
+        this.contentType = contentType;
+        this.url = url;
+        this.createdBy = createdBy;
     }
 }

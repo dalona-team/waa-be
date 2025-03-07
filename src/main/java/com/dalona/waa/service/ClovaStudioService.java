@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
@@ -30,11 +29,8 @@ public class ClovaStudioService {
     private final DogService dogService;
     private final RestTemplate restTemplate;
 
-    @Value("${clova.api.url}")
-    private String clovaApiUrl;
-
-    @Value("${clova.api.key}")
-    private String clovaApiKey;
+    private static final String CLOVA_API_URL = System.getenv("CLOVA_API_URL");
+    private static final String CLOVAL_API_KEY = System.getenv("CLOVA_API_KEY");
 
     public ContentsResDto generateContents(ContentsReqDto contentsReqDto) {
         TemplateResDto template = templateService.getTemplateById(contentsReqDto.getTemplateId());
@@ -101,20 +97,20 @@ public class ClovaStudioService {
 
     private String requestChatCompletion(ClovaRequestBody requestBody) {
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + clovaApiKey);
+        headers.set("Authorization", "Bearer " + CLOVAL_API_KEY);
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<ClovaRequestBody> httpEntity = new HttpEntity<>(requestBody, headers);
 
         ResponseEntity<ClovaResponse> response = restTemplate.exchange(
-                clovaApiUrl,
+                CLOVA_API_URL,
                 HttpMethod.POST,
                 httpEntity,
                 ClovaResponse.class
         );
         ClovaResponse clovaResponse = response.getBody();
 
-        if (!"20000".equals(clovaResponse.getStatus().getCode())) {
+        if (!(clovaResponse.getStatus().getCode()).equals("2000")) {
             throw new RestClientException("Clova API 오류 발생: " + clovaResponse.getStatus().getMessage());
         }
 
