@@ -93,5 +93,4 @@ public class DogInfoResDto {
         this.rescueContext = dogProfile.getRescueContext();
         this.additionalStory = dogProfile.getAdditionalStory();
     }
-
 }

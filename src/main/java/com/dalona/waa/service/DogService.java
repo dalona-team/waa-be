@@ -4,7 +4,6 @@ import com.dalona.waa.domain.Dog;
 import com.dalona.waa.domain.DogProfile;
 import com.dalona.waa.dto.requestDto.CreateDogDto;
 import com.dalona.waa.dto.responseDto.DogInfoResDto;
-import com.dalona.waa.dto.responseDto.DogProfileResDto;
 import com.dalona.waa.dto.responseDto.DogResDto;
 import com.dalona.waa.repository.DogProfileRepository;
 import com.dalona.waa.repository.DogRepository;
@@ -51,23 +50,20 @@ public class DogService {
         return timestamp + randomString;
     }
 
-    public DogResDto getDogById(Integer id) {
-        Dog dog = dogRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("DOG_NOT_FOUND"));
-        return new DogResDto(dog);
-    }
-
-    public DogProfileResDto getDogProfileByDogId(Integer dogId) {
-        DogProfile dogProfile = dogProfileRepository.findById(dogId)
-                .orElseThrow(() -> new EntityNotFoundException("DOG_PROFILE_NOT_FOUND"));
-        return new DogProfileResDto(dogProfile);
-    }
-
     public List<DogResDto> getDogListByOrganizationId(Integer organizationId) {
         List<Dog> dogs = dogRepository.findAllByOrganizationId(organizationId);
 
         return dogs.stream()
                 .map(DogResDto::new)
                 .collect(Collectors.toList());
+    }
+
+    public DogInfoResDto getDogInfo(Integer dogId) {
+        Dog dog = dogRepository.findById(dogId)
+                .orElseThrow(() -> new EntityNotFoundException("DOG_NOT_FOUND"));
+        DogProfile dogProfile = dogProfileRepository.findById(dogId)
+                .orElseThrow(() -> new EntityNotFoundException("DOG_PROFILE_NOT_FOUND"));
+
+        return new DogInfoResDto(dog, dogProfile);
     }
 }
