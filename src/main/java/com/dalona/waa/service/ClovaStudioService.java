@@ -8,8 +8,7 @@ import com.dalona.waa.dto.requestDto.ContentsReqDto;
 import com.dalona.waa.dto.responseDto.ContentsResDto;
 import com.dalona.waa.dto.responseDto.DogInfoResDto;
 import com.dalona.waa.dto.responseDto.TemplateResDto;
-import com.dalona.waa.enums.DogGender;
-import com.dalona.waa.enums.PottyTraining;
+import com.dalona.waa.enums.BooleanStatus;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -48,25 +47,46 @@ public class ClovaStudioService {
     private String formatDogProfile(DogInfoResDto dogInfo) {
         StringBuilder sb = new StringBuilder();
         sb.append("강아지 정보 :\n");
-        sb.append("- 이름 : ").append(dogInfo.getName()).append("\n");
-        sb.append("- 성별 : ").append(dogInfo.getGender().equals(DogGender.MALE) ? "수컷" : "암컷").append("\n");
-        sb.append("- 몸무게 : ").append(dogInfo.getWeight() / 1000).append("kg").append("\n");
-        sb.append("- 출생연월 : ").append(dogInfo.getBirthDate())
-                .append(dogInfo.getBirthDateIsEstimated() ? " 추정" : "").append("\n");
-        sb.append("- 구조일시 : ").append(dogInfo.getRescueDate()).append("\n");
-        sb.append("- 구조 위치 : ").append(dogInfo.getRescueLocation()).append("\n");
-        sb.append("- 중성화 여부 : ").append(dogInfo.getNeutered() ? "함" : "안함").append("\n");
-        sb.append("- 심장사상충 감염 여부 : ").append(dogInfo.getHeartworm() ? "양성" : "음성").append("\n");
-        sb.append("- 켄넬 코프 접종 여부 : ").append(dogInfo.getKennelCough() ? "맞음" : "안맞음").append("\n");
-        sb.append("- 이빨 스케일링 : ").append(dogInfo.getDentalScaling() ? "함" : "안함").append("\n");
-        sb.append("- 짖음 정도(1~5) : ").append(dogInfo.getBarkingLevel()).append("\n");
-        sb.append("- 분리불안 정도(1~5) : ").append(dogInfo.getSeparationAnxiety()).append("\n");
-        sb.append("- 배변활동 : ").append(dogInfo.getPottyTraining().equals(PottyTraining.BOTH) ? "실내배변, 실외배변 둘 다"
-                : dogInfo.getPottyTraining().equals(PottyTraining.INDOOR) ? "실내배변" : "실외배변").append("\n");
-        sb.append("- 성격 : ").append(dogInfo.getBehaviorNotes()).append("\n");
-        sb.append("- 구조 사연 : ").append(dogInfo.getRescueContext()).append("\n");
-        sb.append("- 추가 스토리 : ").append(dogInfo.getAdditionalStory()).append("\n");
-        sb.append("공고 : ");
+        sb.append("\n- 이름 : ").append(dogInfo.getName());
+        sb.append("\n- 성별 : ").append(dogInfo.getGender().getDescription());
+        sb.append("\n- 몸무게 : ").append(dogInfo.getWeight() / 1000).append("kg");
+        sb.append("\n- 출생연월 : ").append(dogInfo.getBirthDate())
+                .append(dogInfo.getBirthDateIsEstimated().equals(BooleanStatus.TRUE) ? " 추정" : "");
+        sb.append("\n- 구조일시 : ").append(dogInfo.getRescueDate());
+        sb.append("\n- 구조 위치 : ").append(dogInfo.getRescueLocation());
+
+        if (dogInfo.getNeutered() != null) {
+            sb.append("\n- 중성화 여부 : ").append(dogInfo.getNeutered().getDescription());
+        }
+        if (dogInfo.getHeartworm() != null) {
+            sb.append("\n- 심장사상충 감염 여부 : ").append(dogInfo.getHeartworm().getDescription());
+        }
+        if (dogInfo.getKennelCough() != null) {
+            sb.append("\n- 켄넬 코프 여부 : ").append(dogInfo.getKennelCough().getDescription());
+        }
+        if (dogInfo.getDentalScaling() != null) {
+            sb.append("\n- 이빨 스케일링 : ").append(dogInfo.getDentalScaling().getDescription());
+        }
+        if (dogInfo.getBarkingLevel() != null) {
+            sb.append("\n- 짖음 정도(1~5) : ").append(dogInfo.getBarkingLevel().getDescription());
+        }
+        if (dogInfo.getSeparationAnxiety() != null) {
+            sb.append("\n- 분리불안 정도(1~5) : ").append(dogInfo.getSeparationAnxiety().getDescription());
+        }
+        if (dogInfo.getPottyTraining() != null) {
+            sb.append("\n- 배변활동 : ").append(dogInfo.getPottyTraining().getDescription());
+        }
+        if (dogInfo.getBehaviorNotes() != null && !dogInfo.getBehaviorNotes().isBlank()) {
+            sb.append("\n- 성격 : ").append(dogInfo.getBehaviorNotes());
+        }
+        if (dogInfo.getRescueContext() != null && !dogInfo.getRescueContext().isBlank()) {
+            sb.append("\n- 구조 사연 : ").append(dogInfo.getRescueContext());
+        }
+        if (dogInfo.getAdditionalStory() != null && !dogInfo.getAdditionalStory().isBlank()) {
+            sb.append("\n- 추가 스토리 : ").append(dogInfo.getAdditionalStory());
+        }
+
+        sb.append("\n공고 : ");
 
         return sb.toString();
     }

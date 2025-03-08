@@ -1,6 +1,7 @@
 package com.dalona.waa.controller;
 
 import com.dalona.waa.dto.requestDto.CreateDogDto;
+import com.dalona.waa.dto.requestDto.UpdateDogDto;
 import com.dalona.waa.dto.responseDto.DogInfoResDto;
 import com.dalona.waa.dto.responseDto.DogResDto;
 import com.dalona.waa.service.DogService;
@@ -14,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,6 +48,17 @@ public class DogController {
     @Operation(summary = "강아지 정보 상세 조회 API", description = "강아지의 상세 정보를 조회합니다.")
     public ResponseEntity<DogInfoResDto> getDogInfo(@Valid @PathVariable Integer id) {
         DogInfoResDto dogInfo = dogService.getDogInfo(id);
+
+        return new ResponseEntity<>(dogInfo, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "강아지 정보 수정 API", description = "강아지의 상세 정보를 수정합니다.")
+    public ResponseEntity<DogInfoResDto> updateDogInfo(
+            @Valid @PathVariable Integer id,
+            @Valid @RequestBody UpdateDogDto updateDogDto
+    ) {
+        DogInfoResDto dogInfo = dogService.update(id, updateDogDto);
 
         return new ResponseEntity<>(dogInfo, HttpStatus.OK);
     }
