@@ -1,6 +1,6 @@
 package com.dalona.waa.controller;
 
-import com.dalona.waa.dto.responseDto.DogInfoResDto;
+import com.dalona.waa.dto.responseDto.DogResDto;
 import com.dalona.waa.service.DogService;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
@@ -23,9 +23,10 @@ public class DogController {
 
     @GetMapping
     @Operation(summary = "구조단체의 강아지 정보 목록 조회 API", description = "구조단체의 강아지 정보 목록을 조회합니다.")
-    public ResponseEntity<List<DogInfoResDto>> getOrganizationDogList(
-            @RequestParam(name = "organizationId") Integer organizationId) {
-        List<DogInfoResDto> dogInfoList = dogService.getDogInfoListByOrganizationId(organizationId);
+    public ResponseEntity<List<DogResDto>> getOrganizationDogList(
+            @RequestParam(name = "organizationId") Integer organizationId
+    ) {
+        List<DogResDto> dogInfoList = dogService.getDogListByOrganizationId(organizationId);
 
         return new ResponseEntity<>(dogInfoList, HttpStatus.OK);
     }
