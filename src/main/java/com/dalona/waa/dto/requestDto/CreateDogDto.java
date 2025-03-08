@@ -3,12 +3,12 @@ package com.dalona.waa.dto.requestDto;
 import com.dalona.waa.decorator.EnumValidator;
 import com.dalona.waa.domain.Dog;
 import com.dalona.waa.domain.DogProfile;
+import com.dalona.waa.enums.BooleanStatus;
 import com.dalona.waa.enums.DogGender;
 import com.dalona.waa.enums.DogStatus;
+import com.dalona.waa.enums.LevelStatus;
 import com.dalona.waa.enums.PottyTraining;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import lombok.Data;
@@ -30,9 +30,10 @@ public class CreateDogDto {
     @Schema(description = "생일(나이)", example = "2024-03-08")
     private LocalDate birthDate;
 
+    @EnumValidator(enumClass = BooleanStatus.class)
     @NotNull(message = "birthDateIsEstimated is required")
     @Schema(description = "생일 추정 여부", example = "true")
-    private Boolean birthDateIsEstimated;
+    private String birthDateIsEstimated;
 
     @EnumValidator(enumClass = DogStatus.class)
     @NotNull(message = "status is required")
@@ -55,33 +56,35 @@ public class CreateDogDto {
     @Schema(description = "몸무게(g)", example = "8500")
     private Integer weight;
 
-    @Schema(description = "중성화 여부(모름: null)", example = "true")
-    private Boolean neutered;
+    @EnumValidator(enumClass = BooleanStatus.class)
+    @Schema(description = "중성화 여부", example = "TRUE")
+    private String neutered;
 
-    @Schema(description = "사상충 감염 여부(모름: null)", example = "true")
-    private Boolean heartworm;
+    @EnumValidator(enumClass = BooleanStatus.class)
+    @Schema(description = "사상충 감염 여부", example = "TRUE")
+    private String heartworm;
 
-    @Schema(description = "켄넬 코프 여부(모름: null)", example = "true")
-    private Boolean kennelCough;
+    @EnumValidator(enumClass = BooleanStatus.class)
+    @Schema(description = "켄넬 코프 여부", example = "TRUE")
+    private String kennelCough;
 
-    @Schema(description = "이빨 스케일링 여부(모름: null)", example = "true")
-    private Boolean dentalScaling;
+    @EnumValidator(enumClass = BooleanStatus.class)
+    @Schema(description = "이빨 스케일링 여부", example = "TRUE")
+    private String dentalScaling;
 
     @Schema(description = "기타 건강 관련 특이사항", example = "아나플라즈마 양성이 떠서 현재 약을 먹으면서 치료중입니다.")
     private String healthNotes;
 
-    @Min(value = 0, message = "짖음 정도는 0~5 사이 숫자로만 저장할 수 있습니다.")
-    @Max(value = 5, message = "짖음 정도는 0~5 사이 숫자로만 저장할 수 있습니다.")
-    @Schema(description = "짖음 정도(0~5, 모름: null)", example = "2")
-    private Integer barkingLevel;
+    @EnumValidator(enumClass = BooleanStatus.class)
+    @Schema(description = "짖음 정도(0~5)", example = "LEVEL_2")
+    private String barkingLevel;
 
-    @Min(value = 0, message = "분리불안 정도는 0~5 사이 숫자로만 저장할 수 있습니다.")
-    @Max(value = 5, message = "분리불안 정도는 0~5 사이 숫자로만 저장할 수 있습니다.")
-    @Schema(description = "분리불안 정도(0~5, 모름: null)", example = "2")
-    private Integer separationAnxiety;
+    @EnumValidator(enumClass = BooleanStatus.class)
+    @Schema(description = "분리불안 정도(0~5)", example = "UNKNOWN")
+    private String separationAnxiety;
 
     @EnumValidator(enumClass = PottyTraining.class)
-    @Schema(description = "실내/실외 배변(모름: null)", example = "OUTDOOR")
+    @Schema(description = "실내/실외 배변", example = "OUTDOOR")
     private String pottyTraining;
 
     @Schema(description = "기타 생활 참고 정보", example = "손, 앉아, 엎드려, 브이, 하이파이브할 정도로 천재임.")
@@ -100,7 +103,7 @@ public class CreateDogDto {
                 .name(this.name)
                 .gender(DogGender.valueOf(this.gender))
                 .birthDate(this.birthDate)
-                .birthDateIsEstimated(this.birthDateIsEstimated)
+                .birthDateIsEstimated(BooleanStatus.valueOf(this.birthDateIsEstimated))
                 .status(DogStatus.valueOf(this.status))
                 .build();
     }
@@ -112,13 +115,13 @@ public class CreateDogDto {
                 .rescueDate(this.rescueDate)
                 .rescueLocation(this.rescueLocation)
                 .weight(this.weight)
-                .neutered(this.neutered)
-                .heartworm(this.heartworm)
-                .kennelCough(this.kennelCough)
-                .dentalScaling(this.dentalScaling)
+                .neutered(BooleanStatus.valueOf(this.neutered))
+                .heartworm(BooleanStatus.valueOf(this.heartworm))
+                .kennelCough(BooleanStatus.valueOf(this.kennelCough))
+                .dentalScaling(BooleanStatus.valueOf(this.dentalScaling))
                 .healthNotes(this.healthNotes)
-                .barkingLevel(this.barkingLevel)
-                .separationAnxiety(this.separationAnxiety)
+                .barkingLevel(LevelStatus.valueOf(this.barkingLevel))
+                .separationAnxiety(LevelStatus.valueOf(this.separationAnxiety))
                 .pottyTraining(this.pottyTraining != null ? PottyTraining.valueOf(this.pottyTraining) : null)
                 .behaviorNotes(this.behaviorNotes)
                 .rescueContext(this.rescueContext)

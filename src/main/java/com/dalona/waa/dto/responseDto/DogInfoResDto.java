@@ -2,8 +2,10 @@ package com.dalona.waa.dto.responseDto;
 
 import com.dalona.waa.domain.Dog;
 import com.dalona.waa.domain.DogProfile;
+import com.dalona.waa.enums.BooleanStatus;
 import com.dalona.waa.enums.DogGender;
 import com.dalona.waa.enums.DogStatus;
+import com.dalona.waa.enums.LevelStatus;
 import com.dalona.waa.enums.PottyTraining;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,7 +24,7 @@ public class DogInfoResDto {
 
     private LocalDate birthDate;
 
-    private Boolean birthDateIsEstimated;
+    private BooleanStatus birthDateIsEstimated;
 
     private DogStatus status;
 
@@ -34,19 +36,19 @@ public class DogInfoResDto {
 
     private Integer weight; // 몸무게 (g 단위)
 
-    private Boolean neutered; // 중성화 여부
+    private BooleanStatus neutered; // 중성화 여부
 
-    private Boolean heartworm; // 사상충 감염 여부
+    private BooleanStatus heartworm; // 사상충 감염 여부
 
-    private Boolean kennelCough; // 켄넬코프 여부
+    private BooleanStatus kennelCough; // 켄넬코프 여부
 
-    private Boolean dentalScaling; // 이빨 스케일링 여부
+    private BooleanStatus dentalScaling; // 이빨 스케일링 여부
 
     private String healthNotes; // 기타 건강 특이사항
 
-    private Integer barkingLevel; // 짖음 정도 (0~5)
+    private LevelStatus barkingLevel; // 짖음 정도 (0~5)
 
-    private Integer separationAnxiety; // 분리 불안 정도 (0~5)
+    private LevelStatus separationAnxiety; // 분리 불안 정도 (0~5)
 
     private PottyTraining pottyTraining; // 배변
 

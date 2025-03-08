@@ -1,5 +1,6 @@
 package com.dalona.waa.domain;
 
+import com.dalona.waa.enums.BooleanStatus;
 import com.dalona.waa.enums.DogGender;
 import com.dalona.waa.enums.DogStatus;
 import jakarta.persistence.*;
@@ -36,8 +37,9 @@ public class Dog {
     @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "birth_date_is_estimated", nullable = false)
-    private Boolean birthDateIsEstimated;
+    private BooleanStatus birthDateIsEstimated;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "dog_status", nullable = false)
@@ -73,7 +75,7 @@ public class Dog {
             String name,
             DogGender gender,
             LocalDate birthDate,
-            boolean birthDateIsEstimated,
+            BooleanStatus birthDateIsEstimated,
             DogStatus status,
             Integer createdBy
     ) {

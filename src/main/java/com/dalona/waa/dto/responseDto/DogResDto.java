@@ -1,6 +1,7 @@
 package com.dalona.waa.dto.responseDto;
 
 import com.dalona.waa.domain.Dog;
+import com.dalona.waa.enums.BooleanStatus;
 import com.dalona.waa.enums.DogGender;
 import com.dalona.waa.enums.DogStatus;
 import java.time.LocalDate;
@@ -19,7 +20,7 @@ public class DogResDto {
 
     private LocalDate birthDate;
 
-    private Boolean birthDateIsEstimated;
+    private BooleanStatus birthDateIsEstimated;
 
     private DogStatus status;
 

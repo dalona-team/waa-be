@@ -1,5 +1,7 @@
 package com.dalona.waa.domain;
 
+import com.dalona.waa.enums.BooleanStatus;
+import com.dalona.waa.enums.LevelStatus;
 import com.dalona.waa.enums.PottyTraining;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,26 +32,32 @@ public class DogProfile {
     @Column(nullable = false)
     private Integer weight; // 몸무게 (g 단위)
 
-    private Boolean neutered; // 중성화 여부
+    @Enumerated(EnumType.STRING)
+    private BooleanStatus neutered; // 중성화 여부
 
     /* 건강 정보 */
-    private Boolean heartworm; // 사상충 감염 여부
+    @Enumerated(EnumType.STRING)
+    private BooleanStatus heartworm; // 사상충 감염 여부
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "kennel_cough")
-    private Boolean kennelCough; // 켄넬코프 여부
+    private BooleanStatus kennelCough; // 켄넬코프 여부
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "dental_scaling")
-    private Boolean dentalScaling; // 이빨 스케일링 여부
+    private BooleanStatus dentalScaling; // 이빨 스케일링 여부
 
     @Column(name = "health_notes", columnDefinition = "TEXT")
     private String healthNotes; // 기타 건강 특이사항
 
     /* 반려인 생활 참고 정보 */
+    @Enumerated(EnumType.STRING)
     @Column(name = "barking_level")
-    private Integer barkingLevel; // 짖음 정도 (0~5)
+    private LevelStatus barkingLevel; // 짖음 정도 (0~5)
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "separation_anxiety")
-    private Integer separationAnxiety; // 분리 불안 정도 (0~5)
+    private LevelStatus separationAnxiety; // 분리 불안 정도 (0~5)
 
     @Enumerated(EnumType.STRING)
     @Column(name = "potty_training")
@@ -89,11 +97,13 @@ public class DogProfile {
     }
 
     @Builder
-    public DogProfile(Integer dogId, String adoptionAddress, LocalDate rescueDate, String rescueLocation,
-                      Integer weight, Boolean neutered, Boolean heartworm, Boolean kennelCough,
-                      Boolean dentalScaling, String healthNotes, Integer barkingLevel, Integer separationAnxiety,
-                      PottyTraining pottyTraining, String behaviorNotes, String rescueContext,
-                      String additionalStory, Integer createdBy) {
+    public DogProfile(
+            Integer dogId, String adoptionAddress, LocalDate rescueDate, String rescueLocation,
+            Integer weight, BooleanStatus neutered, BooleanStatus heartworm, BooleanStatus kennelCough,
+            BooleanStatus dentalScaling, String healthNotes, LevelStatus barkingLevel,
+            LevelStatus separationAnxiety, PottyTraining pottyTraining, String behaviorNotes,
+            String rescueContext, String additionalStory, Integer createdBy
+    ) {
         this.dogId = dogId;
         this.adoptionAddress = adoptionAddress;
         this.rescueDate = rescueDate;
