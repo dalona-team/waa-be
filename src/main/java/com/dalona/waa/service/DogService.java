@@ -2,13 +2,18 @@ package com.dalona.waa.service;
 
 import com.dalona.waa.domain.Dog;
 import com.dalona.waa.domain.DogProfile;
+import com.dalona.waa.dto.requestDto.CreateDogDto;
+import com.dalona.waa.dto.responseDto.DogInfoResDto;
 import com.dalona.waa.dto.responseDto.DogProfileResDto;
 import com.dalona.waa.dto.responseDto.DogResDto;
 import com.dalona.waa.repository.DogProfileRepository;
 import com.dalona.waa.repository.DogRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +27,29 @@ public class DogService {
 
     private final DogRepository dogRepository;
     private final DogProfileRepository dogProfileRepository;
+
+    public DogInfoResDto register(CreateDogDto createDogDto) {
+        Dog dogEntity = createDogDto.toDogEntity(generateRegistrationNo());
+        Dog dog = dogRepository.save(dogEntity);
+
+        DogProfile profileEntity = createDogDto.toDogProfileEntity(dog.getId());
+        DogProfile dogProfile = dogProfileRepository.save(profileEntity);
+
+        return new DogInfoResDto(dog, dogProfile);
+    }
+
+    private String generateRegistrationNo() {
+        LocalDateTime now = LocalDateTime.now();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMddHHmm");
+        String timestamp = now.format(formatter);
+
+        Random random = new Random();
+        int randomNumber = random.nextInt(1000); // 0 ~ 999
+        String randomString = String.format("%03d", randomNumber);
+
+        return timestamp + randomString;
+    }
 
     public DogResDto getDogById(Integer id) {
         Dog dog = dogRepository.findById(id)

@@ -20,6 +20,9 @@ public class Dog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "registration_no", unique = true)
+    private String registrationNo;
+
     @Column(name = "organization_id", nullable = false)
     private Integer organizationId;
 
@@ -64,8 +67,17 @@ public class Dog {
     }
 
     @Builder
-    public Dog(Integer organizationId, String name, DogGender gender, LocalDate birthDate, boolean birthDateIsEstimated,
-               DogStatus status, Integer createdBy) {
+    public Dog(
+            String registrationNo,
+            Integer organizationId,
+            String name,
+            DogGender gender,
+            LocalDate birthDate,
+            boolean birthDateIsEstimated,
+            DogStatus status,
+            Integer createdBy
+    ) {
+        this.registrationNo = registrationNo;
         this.organizationId = organizationId;
         this.name = name;
         this.gender = gender;
