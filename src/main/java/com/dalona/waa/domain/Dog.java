@@ -88,4 +88,20 @@ public class Dog {
         this.status = status;
         this.createdBy = createdBy;
     }
+
+    public void update(
+            String name,
+            String gender,
+            LocalDate birthDate,
+            String birthDateIsEstimated,
+            String status,
+            Integer updatedBy
+    ) {
+        if (name != null) this.name = name;
+        if (gender != null) this.gender = DogGender.valueOf(gender);
+        if (birthDate != null) this.birthDate = birthDate;
+        if (birthDateIsEstimated != null) this.birthDateIsEstimated = BooleanStatus.valueOf( birthDateIsEstimated);
+        if (status != null) this.status = DogStatus.valueOf(status);
+        if (updatedBy != null) this.updatedBy = updatedBy;
+    }
 }

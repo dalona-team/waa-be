@@ -3,6 +3,7 @@ package com.dalona.waa.service;
 import com.dalona.waa.domain.Dog;
 import com.dalona.waa.domain.DogProfile;
 import com.dalona.waa.dto.requestDto.CreateDogDto;
+import com.dalona.waa.dto.requestDto.UpdateDogDto;
 import com.dalona.waa.dto.responseDto.DogInfoResDto;
 import com.dalona.waa.dto.responseDto.DogResDto;
 import com.dalona.waa.repository.DogProfileRepository;
@@ -58,12 +59,50 @@ public class DogService {
                 .collect(Collectors.toList());
     }
 
-    public DogInfoResDto getDogInfo(Integer dogId) {
-        Dog dog = dogRepository.findById(dogId)
+    public DogInfoResDto getDogInfo(Integer id) {
+        Dog dog = dogRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("DOG_NOT_FOUND"));
-        DogProfile dogProfile = dogProfileRepository.findById(dogId)
+        DogProfile dogProfile = dogProfileRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("DOG_PROFILE_NOT_FOUND"));
 
+        return new DogInfoResDto(dog, dogProfile);
+    }
+
+    public DogInfoResDto update(Integer id, UpdateDogDto updateDogDto) {
+        Dog dog = dogRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("DOG_NOT_FOUND"));
+        DogProfile dogProfile = dogProfileRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("DOG_PROFILE_NOT_FOUND"));
+
+        dog.update(
+                updateDogDto.getName(),
+                updateDogDto.getGender(),
+                updateDogDto.getBirthDate(),
+                updateDogDto.getBirthDateIsEstimated(),
+                updateDogDto.getStatus(),
+                1
+        );
+        dogProfile.update(
+                updateDogDto.getAdoptionAddress(),
+                updateDogDto.getRescueDate(),
+                updateDogDto.getRescueLocation(),
+                updateDogDto.getWeight(),
+                updateDogDto.getNeutered(),
+                updateDogDto.getHeartworm(),
+                updateDogDto.getKennelCough(),
+                updateDogDto.getDentalScaling(),
+                updateDogDto.getHealthNotes(),
+                updateDogDto.getBarkingLevel(),
+                updateDogDto.getSeparationAnxiety(),
+                updateDogDto.getPottyTraining(),
+                updateDogDto.getBehaviorNotes(),
+                updateDogDto.getRescueContext(),
+                updateDogDto.getAdditionalStory(),
+                1
+        );
+
+        dogRepository.save(dog);
+        dogProfileRepository.save(dogProfile);
         return new DogInfoResDto(dog, dogProfile);
     }
 }

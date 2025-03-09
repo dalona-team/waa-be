@@ -122,4 +122,29 @@ public class DogProfile {
         this.additionalStory = additionalStory;
         this.createdBy = createdBy;
     }
+
+    public void update(
+            String adoptionAddress, LocalDate rescueDate, String rescueLocation,
+            Integer weight, String neutered, String heartworm, String kennelCough,
+            String dentalScaling, String healthNotes, String barkingLevel,
+            String separationAnxiety, String pottyTraining, String behaviorNotes,
+            String rescueContext, String additionalStory, Integer updatedBy
+    ) {
+        this.adoptionAddress = adoptionAddress;
+        if (rescueDate != null) this.rescueDate = rescueDate;
+        if (rescueLocation != null) this.rescueLocation = rescueLocation;
+        if (weight != null) this.weight = weight;
+        if (neutered != null) this.neutered = BooleanStatus.valueOf(neutered);
+        if (heartworm != null) this.heartworm = BooleanStatus.valueOf(heartworm);
+        if (kennelCough != null) this.kennelCough = BooleanStatus.valueOf(kennelCough);
+        if (dentalScaling != null) this.dentalScaling = BooleanStatus.valueOf(dentalScaling);
+        if (healthNotes != null) this.healthNotes = healthNotes;
+        if (barkingLevel != null) this.barkingLevel = LevelStatus.valueOf(barkingLevel);
+        if (separationAnxiety != null) this.separationAnxiety = LevelStatus.valueOf(separationAnxiety);
+        if (pottyTraining != null) this.pottyTraining = PottyTraining.valueOf(pottyTraining);
+        if (behaviorNotes != null) this.behaviorNotes = behaviorNotes;
+        if (rescueContext != null) this.rescueContext = rescueContext;
+        if (additionalStory != null) this.additionalStory = additionalStory;
+        if (updatedBy != null) this.updatedBy = updatedBy;
+    }
 }
