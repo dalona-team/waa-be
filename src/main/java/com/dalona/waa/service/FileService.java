@@ -26,8 +26,10 @@ public class FileService {
 
     private FileResDto createFile(MultipartFile multipartFile, String fileKey) {
         File entity = File.builder()
+                .organizationId(1)
                 .originalName(multipartFile.getOriginalFilename())
                 .contentType(multipartFile.getContentType())
+                .key(fileKey)
                 .build();
         File file = fileRepository.save(entity);
 

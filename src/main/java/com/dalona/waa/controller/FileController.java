@@ -29,7 +29,7 @@ public class FileController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @Operation(summary = "이미지 파일 업로드 API", description = "s3 임시 폴더에 form data로 전동한 이미지를 업로드합니다.")
+    @Operation(summary = "이미지 파일 업로드 API", description = "s3 임시 폴더에 form data로 전송한 이미지를 업로드합니다.")
     public ResponseEntity<FileResDto> uploadImage(
             @Parameter(
                     description = "multipart/form-data 타입의 이미지 데이터. (key: file)"

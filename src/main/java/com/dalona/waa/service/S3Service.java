@@ -7,9 +7,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,14 +22,15 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class S3Service {
 
-    private static final String BUCKET = System.getenv("AWS_S3_BUCKET");
+    @Value("${spring.cloud.aws.s3.bucket}")
+    private String BUCKET;
 
     private final S3Operations s3Operations;
 
     public String upload(MultipartFile multipartFile) throws IOException {
-        String fileKey = "";
-        String contentType = multipartFile.getContentType();
+        String fileKey = "temp/" + UUID.randomUUID() + "_" + getUrlSafeName(multipartFile.getOriginalFilename());
 
+        String contentType = multipartFile.getContentType();
         validateContentType(contentType);
 
         try (InputStream is = multipartFile.getInputStream()) {
@@ -44,5 +47,9 @@ public class S3Service {
         if (!imageTypes.contains(contentType)) {
             throw new BadRequestException("NOT_IMAGE_TYPE_FILE");
         }
+    }
+
+    private String getUrlSafeName(String originalFileName) {
+        return originalFileName.replaceAll("[^a-zA-Z0-9.\\-]", "_");
     }
 }

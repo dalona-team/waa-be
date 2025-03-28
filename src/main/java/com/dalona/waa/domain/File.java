@@ -33,7 +33,7 @@ public class File {
     private String contentType;
 
     @Column(nullable = false)
-    private String url;
+    private String key;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -51,11 +51,11 @@ public class File {
     }
 
     @Builder
-    public File(int organizationId, String originalName, String contentType, String url, int createdBy) {
+    public File(int organizationId, String originalName, String contentType, String key, int createdBy) {
         this.organizationId = organizationId;
         this.originalName = originalName;
         this.contentType = contentType;
-        this.url = url;
+        this.key = key;
         this.createdBy = createdBy;
     }
 }
