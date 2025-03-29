@@ -19,6 +19,7 @@ public class PostService {
 
     public PostResDto createPost(CreatePostDto createPostDto) {
         Post post = createPostDto.toEntity();
+        postRepository.save(post);
         return new PostResDto(post);
     }
 }

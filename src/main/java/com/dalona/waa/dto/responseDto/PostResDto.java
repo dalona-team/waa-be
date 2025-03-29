@@ -13,15 +13,9 @@ public class PostResDto {
 
     private String instagramUrl;
 
-    private LocalDateTime createdAt;
-
-    private Integer createdBy;
-
     public PostResDto(Post post) {
         this.id = post.getId();
         this.dogId = post.getDogId();
         this.instagramUrl = post.getInstagramUrl();
-        this.createdAt = post.getCreatedAt();
-        this.createdBy = post.getCreatedBy();
     }
 }
