@@ -15,8 +15,4 @@ public class ContentsReqDto {
     @NotNull(message = "dogId is required")
     @Schema(description = "게시글을 생성할 강아지의 id", example = "1")
     private Integer dogId;
-
-    @NotNull(message = "imageFileIds is required")
-    @Schema(description = "내용 생성에 사용할 프롬프트 템플릿 id", example = "[1,2,3]")
-    private ArrayList<Integer> imageFileIds;
 }

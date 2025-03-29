@@ -124,14 +124,14 @@ public class ClovaStudioService {
         HttpEntity<ClovaRequestBody> httpEntity = new HttpEntity<>(requestBody, headers);
 
         ResponseEntity<ClovaResponse> response = restTemplate.exchange(
-                clovaApiKey,
+                clovaApiUrl,
                 HttpMethod.POST,
                 httpEntity,
                 ClovaResponse.class
         );
         ClovaResponse clovaResponse = response.getBody();
 
-        if (!(clovaResponse.getStatus().getCode()).equals("2000")) {
+        if (!(clovaResponse.getStatus().getCode()).equals("20000")) {
             throw new RestClientException("Clova API 오류 발생: " + clovaResponse.getStatus().getMessage());
         }
 
