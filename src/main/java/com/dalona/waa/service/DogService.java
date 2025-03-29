@@ -80,7 +80,10 @@ public class DogService {
         return dogs.stream()
                 .map(dog -> {
                     DogFile dogFile = dogFileRepository.findFirstByDogIdOrderByCreatedAtAsc(dog.getId());
-                    String imageUrl = fileService.generatePreSignedUrl(dogFile.getFileId());
+                    String imageUrl = null;
+                    if (dogFile != null) {
+                        imageUrl = fileService.generatePreSignedUrl(dogFile.getFileId());
+                    }
                     return new DogResDto(dog, imageUrl);
                 })
                 .collect(Collectors.toList());
