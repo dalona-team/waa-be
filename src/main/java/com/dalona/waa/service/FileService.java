@@ -2,13 +2,13 @@ package com.dalona.waa.service;
 
 import com.dalona.waa.domain.File;
 import com.dalona.waa.dto.responseDto.FileResDto;
+import com.dalona.waa.dto.responseDto.FileUrlResDto;
 import com.dalona.waa.repository.FileRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -40,7 +40,7 @@ public class FileService {
         return new FileResDto(file);
     }
 
-    public void copyObjectToPublic(List<Integer> fileIds) {
+    public void copyObjectToPublic(Set<Integer> fileIds) {
         List<File> files = fileRepository.findAllById(fileIds);
 
         files.stream()
@@ -53,5 +53,10 @@ public class FileService {
                 .orElseThrow(() -> new EntityNotFoundException("FILE_NOT_FOUND"));
 
         return s3Service.generatePreSignedUrl(file.getKey());
+    }
+
+    public FileUrlResDto getFileUrlRes(Integer fileId) {
+        String signedUrl = generatePreSignedUrl(fileId);
+        return new FileUrlResDto(fileId, signedUrl);
     }
 }

@@ -1,5 +1,6 @@
 package com.dalona.waa.domain;
 
+import com.dalona.waa.dto.requestDto.UpdateDogDto;
 import com.dalona.waa.enums.BooleanStatus;
 import com.dalona.waa.enums.DogGender;
 import com.dalona.waa.enums.DogStatus;
@@ -89,7 +90,18 @@ public class Dog {
         this.createdBy = createdBy;
     }
 
-    public void update(
+    public void updateWithDto(UpdateDogDto dto, Integer updatedBy) {
+        this.update(
+                dto.getName(),
+                dto.getGender(),
+                dto.getBirthDate(),
+                dto.getBirthDateIsEstimated(),
+                dto.getStatus(),
+                updatedBy
+        );
+    }
+
+    private void update(
             String name,
             String gender,
             LocalDate birthDate,

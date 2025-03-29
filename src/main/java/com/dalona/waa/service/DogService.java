@@ -7,6 +7,7 @@ import com.dalona.waa.dto.requestDto.CreateDogDto;
 import com.dalona.waa.dto.requestDto.UpdateDogDto;
 import com.dalona.waa.dto.responseDto.DogInfoResDto;
 import com.dalona.waa.dto.responseDto.DogResDto;
+import com.dalona.waa.dto.responseDto.FileUrlResDto;
 import com.dalona.waa.repository.DogFileRepository;
 import com.dalona.waa.repository.DogProfileRepository;
 import com.dalona.waa.repository.DogRepository;
@@ -14,8 +15,10 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,13 +42,13 @@ public class DogService {
         DogProfile profileEntity = createDogDto.toDogProfileEntity(dog.getId());
         DogProfile dogProfile = dogProfileRepository.save(profileEntity);
 
-        List<Integer> fileIds = createDogDto.getFileIds();
-        if (fileIds != null) {
-            fileService.copyObjectToPublic(fileIds);
-            createDogFiles(dog.getId(), fileIds);
+        if (createDogDto.getImageFileIds() != null) {
+            Set<Integer> imageFileIds = new HashSet<>(createDogDto.getImageFileIds());
+            fileService.copyObjectToPublic(imageFileIds);
+            createDogFiles(dog.getId(), imageFileIds);
         }
 
-        return new DogInfoResDto(dog, dogProfile);
+        return new DogInfoResDto(dog, dogProfile, null);
     }
 
     private String generateRegistrationNo() {
@@ -61,7 +64,7 @@ public class DogService {
         return timestamp + randomString;
     }
 
-    public void createDogFiles(Integer dogId, List<Integer> fileIds) {
+    public void createDogFiles(Integer dogId, Set<Integer> fileIds) {
         List<DogFile> dogFiles = fileIds.stream()
                 .map(fileId -> DogFile.builder()
                         .dogId(dogId)
@@ -89,7 +92,12 @@ public class DogService {
         DogProfile dogProfile = dogProfileRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("DOG_PROFILE_NOT_FOUND"));
 
-        return new DogInfoResDto(dog, dogProfile);
+        List<DogFile> dogFiles = dogFileRepository.findAllByDogId(id);
+        List<FileUrlResDto> imageFiles = dogFiles.stream()
+                .map(file -> fileService.getFileUrlRes(file.getFileId()))
+                .toList();
+
+        return new DogInfoResDto(dog, dogProfile, imageFiles);
     }
 
     public DogInfoResDto update(Integer id, UpdateDogDto updateDogDto) {
@@ -98,35 +106,34 @@ public class DogService {
         DogProfile dogProfile = dogProfileRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("DOG_PROFILE_NOT_FOUND"));
 
-        dog.update(
-                updateDogDto.getName(),
-                updateDogDto.getGender(),
-                updateDogDto.getBirthDate(),
-                updateDogDto.getBirthDateIsEstimated(),
-                updateDogDto.getStatus(),
-                1
-        );
-        dogProfile.update(
-                updateDogDto.getAdoptionAddress(),
-                updateDogDto.getRescueDate(),
-                updateDogDto.getRescueLocation(),
-                updateDogDto.getWeight(),
-                updateDogDto.getNeutered(),
-                updateDogDto.getHeartworm(),
-                updateDogDto.getKennelCough(),
-                updateDogDto.getDentalScaling(),
-                updateDogDto.getHealthNotes(),
-                updateDogDto.getBarkingLevel(),
-                updateDogDto.getSeparationAnxiety(),
-                updateDogDto.getPottyTraining(),
-                updateDogDto.getBehaviorNotes(),
-                updateDogDto.getRescueContext(),
-                updateDogDto.getAdditionalStory(),
-                1
-        );
+        dog.updateWithDto(updateDogDto, 1);
+        dogProfile.updateWithDto(updateDogDto, 1);
 
         dogRepository.save(dog);
         dogProfileRepository.save(dogProfile);
-        return new DogInfoResDto(dog, dogProfile);
+
+        if (updateDogDto.getImageFileIds() != null) {
+            updateDogImages(id, updateDogDto.getImageFileIds());
+        }
+
+        return new DogInfoResDto(dog, dogProfile, null);
+    }
+
+    public void updateDogImages(Integer dogId, List<Integer> newFileIds) {
+        List<DogFile> existingMappings = dogFileRepository.findAllByDogId(dogId);
+        Set<Integer> existingFileIds = existingMappings.stream()
+                .map(DogFile::getFileId)
+                .collect(Collectors.toSet());
+
+        Set<Integer> newFileIdSet = new HashSet<>(newFileIds);
+
+        Set<Integer> toDelete = new HashSet<>(existingFileIds);
+        toDelete.removeAll(newFileIdSet);
+        dogFileRepository.deleteByDogIdAndFileIdIn(dogId, toDelete);
+
+        Set<Integer> toAdd = new HashSet<>(newFileIdSet);
+        toAdd.removeAll(existingFileIds);
+        fileService.copyObjectToPublic(toAdd);
+        createDogFiles(dogId, toAdd);
     }
 }

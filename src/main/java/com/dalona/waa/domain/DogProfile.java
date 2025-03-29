@@ -1,5 +1,6 @@
 package com.dalona.waa.domain;
 
+import com.dalona.waa.dto.requestDto.UpdateDogDto;
 import com.dalona.waa.enums.BooleanStatus;
 import com.dalona.waa.enums.LevelStatus;
 import com.dalona.waa.enums.PottyTraining;
@@ -123,7 +124,28 @@ public class DogProfile {
         this.createdBy = createdBy;
     }
 
-    public void update(
+    public void updateWithDto(UpdateDogDto dto, Integer updatedBy) {
+        this.update(
+                dto.getAdoptionAddress(),
+                dto.getRescueDate(),
+                dto.getRescueLocation(),
+                dto.getWeight(),
+                dto.getNeutered(),
+                dto.getHeartworm(),
+                dto.getKennelCough(),
+                dto.getDentalScaling(),
+                dto.getHealthNotes(),
+                dto.getBarkingLevel(),
+                dto.getSeparationAnxiety(),
+                dto.getPottyTraining(),
+                dto.getBehaviorNotes(),
+                dto.getRescueContext(),
+                dto.getAdditionalStory(),
+                updatedBy
+        );
+    }
+
+    private void update(
             String adoptionAddress, LocalDate rescueDate, String rescueLocation,
             Integer weight, String neutered, String heartworm, String kennelCough,
             String dentalScaling, String healthNotes, String barkingLevel,

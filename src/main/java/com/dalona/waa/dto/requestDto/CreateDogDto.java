@@ -99,7 +99,7 @@ public class CreateDogDto {
 
     /* dog file */
     @Schema(description = "업로드한 강아지 이미지 파일 Id", example = "[1,2,3]")
-    private List<Integer> fileIds;
+    private List<Integer> imageFileIds;
 
     public Dog toDogEntity(String registrationNo) {
         return Dog.builder()

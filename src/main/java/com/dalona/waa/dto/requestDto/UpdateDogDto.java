@@ -6,8 +6,8 @@ import com.dalona.waa.enums.DogGender;
 import com.dalona.waa.enums.DogStatus;
 import com.dalona.waa.enums.PottyTraining;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.List;
 import lombok.Data;
 
 @Data
@@ -84,4 +84,7 @@ public class UpdateDogDto {
 
     @Schema(description = "기타 사연", example = "벌써 임보처를 3곳을 떠돌고 있어요. 이제는 진짜 평생가족을 찾아갔으면 좋겠어요.")
     private String additionalStory;
+
+    @Schema(description = "업로드한 강아지 이미지 파일 Id", example = "[1,2,3]")
+    private List<Integer> imageFileIds;
 }

@@ -1,6 +1,5 @@
 package com.dalona.waa.domain;
 
-import com.dalona.waa.repository.DogFileRepository;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

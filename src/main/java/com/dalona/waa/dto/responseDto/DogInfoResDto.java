@@ -9,12 +9,15 @@ import com.dalona.waa.enums.LevelStatus;
 import com.dalona.waa.enums.PottyTraining;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Data;
 
 @Data
 public class DogInfoResDto {
 
     private Integer id;
+
+    private String registrationNo;
 
     private Integer organizationId;
 
@@ -62,12 +65,11 @@ public class DogInfoResDto {
 
     private LocalDateTime updatedAt;
 
-    private Integer createdBy;
+    private List<FileUrlResDto> imageFiles;
 
-    private Integer updatedBy;
-
-    public DogInfoResDto(Dog dog, DogProfile dogProfile) {
+    public DogInfoResDto(Dog dog, DogProfile dogProfile, List<FileUrlResDto> imageFiles) {
         this.id = dog.getId();
+        this.registrationNo = dog.getRegistrationNo();
         this.organizationId = dog.getOrganizationId();
         this.name = dog.getName();
         this.gender = dog.getGender();
@@ -76,8 +78,6 @@ public class DogInfoResDto {
         this.status = dog.getStatus();
         this.createdAt = dog.getCreatedAt();
         this.updatedAt = dog.getUpdatedAt();
-        this.createdBy = dog.getCreatedBy();
-        this.updatedBy = dog.getUpdatedBy();
 
         this.adoptionAddress = dogProfile.getAdoptionAddress();
         this.rescueDate = dogProfile.getRescueDate();
@@ -94,5 +94,7 @@ public class DogInfoResDto {
         this.behaviorNotes = dogProfile.getBehaviorNotes();
         this.rescueContext = dogProfile.getRescueContext();
         this.additionalStory = dogProfile.getAdditionalStory();
+
+        this.imageFiles = imageFiles;
     }
 }
