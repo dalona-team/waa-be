@@ -26,20 +26,23 @@ import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
 public class S3Service {
 
     @Value("${spring.cloud.aws.s3.bucket}")
-    private String BUCKET;
+    private String bucket;
 
     private final S3Operations s3Operations;
     private final S3Client s3Client;
+
+    private static final String PUBLIC_FILE_FOLDER = "public/";
+    private static final String TEMP_FILE_FOLDER = "temp/";
 
     public String upload(MultipartFile multipartFile) throws IOException {
         String contentType = multipartFile.getContentType();
         validateContentType(contentType);
 
         String fileKey = UUID.randomUUID() + "_" + getUrlSafeName(multipartFile.getOriginalFilename());
-        String path = "temp/" + fileKey;
+        String path = TEMP_FILE_FOLDER + fileKey;
 
         try (InputStream is = multipartFile.getInputStream()) {
-            s3Operations.upload(BUCKET, path, is, ObjectMetadata.builder().contentType(contentType).build());
+            s3Operations.upload(bucket, path, is, ObjectMetadata.builder().contentType(contentType).build());
         }
 
         return fileKey;
@@ -59,13 +62,13 @@ public class S3Service {
     }
 
     public void copyObject(String fileKey) {
-        String tempFilePath = "temp/" + fileKey;
-        String publicFileKey = "public/" + fileKey;
+        String tempFilePath = TEMP_FILE_FOLDER + fileKey;
+        String publicFileKey = PUBLIC_FILE_FOLDER + fileKey;
 
         CopyObjectRequest copyObjectRequest = CopyObjectRequest.builder()
-                .sourceBucket(BUCKET)
+                .sourceBucket(bucket)
                 .sourceKey(tempFilePath)
-                .destinationBucket(BUCKET)
+                .destinationBucket(bucket)
                 .destinationKey(publicFileKey)
                 .build();
 
@@ -73,7 +76,7 @@ public class S3Service {
     }
 
     public String generatePreSignedUrl(String fileKey) {
-        String path = "public/" + fileKey;
-        return s3Operations.createSignedGetURL(BUCKET, path, Duration.ofMinutes(1)).toString();
+        String path = PUBLIC_FILE_FOLDER + fileKey;
+        return s3Operations.createSignedGetURL(bucket, path, Duration.ofMinutes(1)).toString();
     }
 }
