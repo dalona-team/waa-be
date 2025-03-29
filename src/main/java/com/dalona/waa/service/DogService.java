@@ -75,7 +75,11 @@ public class DogService {
         List<Dog> dogs = dogRepository.findAllByOrganizationId(organizationId);
 
         return dogs.stream()
-                .map(DogResDto::new)
+                .map(dog -> {
+                    DogFile dogFile = dogFileRepository.findFirstByDogIdOrderByCreatedAtAsc(dog.getId());
+                    String imageUrl = fileService.generatePreSignedUrl(dogFile.getFileId());
+                    return new DogResDto(dog, imageUrl);
+                })
                 .collect(Collectors.toList());
     }
 

@@ -3,9 +3,11 @@ package com.dalona.waa.service;
 import com.dalona.waa.domain.File;
 import com.dalona.waa.dto.responseDto.FileResDto;
 import com.dalona.waa.repository.FileRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,5 +46,12 @@ public class FileService {
         files.stream()
                 .map(File::getKey)
                 .forEach(s3Service::copyObject);
+    }
+
+    public String generatePreSignedUrl(Integer fileId) {
+        File file = fileRepository.findById(fileId)
+                .orElseThrow(() -> new EntityNotFoundException("FILE_NOT_FOUND"));
+
+        return s3Service.generatePreSignedUrl(file.getKey());
     }
 }

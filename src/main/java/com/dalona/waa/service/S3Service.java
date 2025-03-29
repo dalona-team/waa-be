@@ -5,6 +5,7 @@ import io.awspring.cloud.s3.S3Operations;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -69,5 +70,10 @@ public class S3Service {
                 .build();
 
         s3Client.copyObject(copyObjectRequest);
+    }
+
+    public String generatePreSignedUrl(String fileKey) {
+        String path = "public/" + fileKey;
+        return s3Operations.createSignedGetURL(BUCKET, path, Duration.ofMinutes(1)).toString();
     }
 }

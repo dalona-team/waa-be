@@ -24,7 +24,9 @@ public class DogResDto {
 
     private DogStatus status;
 
-    public DogResDto(Dog dog) {
+    private String imageUrl;
+
+    public DogResDto(Dog dog, String imageUrl) {
         this.id = dog.getId();
         this.organizationId = dog.getOrganizationId();
         this.name = dog.getName();
@@ -32,5 +34,6 @@ public class DogResDto {
         this.birthDate = dog.getBirthDate();
         this.birthDateIsEstimated = dog.getBirthDateIsEstimated();
         this.status = dog.getStatus();
+        this.imageUrl = imageUrl;
     }
 }
