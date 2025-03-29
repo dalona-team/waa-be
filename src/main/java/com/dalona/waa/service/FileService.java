@@ -34,6 +34,7 @@ public class FileService {
                 .originalName(multipartFile.getOriginalFilename())
                 .contentType(multipartFile.getContentType())
                 .key(fileKey)
+                .createdBy(1)
                 .build();
         File file = fileRepository.save(entity);
 
