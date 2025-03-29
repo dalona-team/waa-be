@@ -5,6 +5,8 @@ import com.dalona.waa.dto.responseDto.FileResDto;
 import com.dalona.waa.repository.FileRepository;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -34,5 +36,13 @@ public class FileService {
         File file = fileRepository.save(entity);
 
         return new FileResDto(file);
+    }
+
+    public void copyObjectToPublic(List<Integer> fileIds) {
+        List<File> files = fileRepository.findAllById(fileIds);
+
+        files.stream()
+                .map(File::getKey)
+                .forEach(s3Service::copyObject);
     }
 }

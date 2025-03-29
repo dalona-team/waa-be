@@ -1,11 +1,13 @@
 package com.dalona.waa.service;
 
 import com.dalona.waa.domain.Dog;
+import com.dalona.waa.domain.DogFile;
 import com.dalona.waa.domain.DogProfile;
 import com.dalona.waa.dto.requestDto.CreateDogDto;
 import com.dalona.waa.dto.requestDto.UpdateDogDto;
 import com.dalona.waa.dto.responseDto.DogInfoResDto;
 import com.dalona.waa.dto.responseDto.DogResDto;
+import com.dalona.waa.repository.DogFileRepository;
 import com.dalona.waa.repository.DogProfileRepository;
 import com.dalona.waa.repository.DogRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -25,8 +27,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class DogService {
 
+    private final FileService fileService;
     private final DogRepository dogRepository;
     private final DogProfileRepository dogProfileRepository;
+    private final DogFileRepository dogFileRepository;
 
     public DogInfoResDto register(CreateDogDto createDogDto) {
         Dog dogEntity = createDogDto.toDogEntity(generateRegistrationNo());
@@ -34,6 +38,12 @@ public class DogService {
 
         DogProfile profileEntity = createDogDto.toDogProfileEntity(dog.getId());
         DogProfile dogProfile = dogProfileRepository.save(profileEntity);
+
+        List<Integer> fileIds = createDogDto.getFileIds();
+        if (fileIds != null) {
+            fileService.copyObjectToPublic(fileIds);
+            createDogFiles(dog.getId(), fileIds);
+        }
 
         return new DogInfoResDto(dog, dogProfile);
     }
@@ -49,6 +59,16 @@ public class DogService {
         String randomString = String.format("%03d", randomNumber);
 
         return timestamp + randomString;
+    }
+
+    public void createDogFiles(Integer dogId, List<Integer> fileIds) {
+        List<DogFile> dogFiles = fileIds.stream()
+                .map(fileId -> DogFile.builder()
+                        .dogId(dogId)
+                        .fileId(fileId)
+                        .build())
+                .collect(Collectors.toList());
+        dogFileRepository.saveAll(dogFiles);
     }
 
     public List<DogResDto> getDogListByOrganizationId(Integer organizationId) {
